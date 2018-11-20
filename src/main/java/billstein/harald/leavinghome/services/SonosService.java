@@ -26,7 +26,7 @@ public class SonosService {
     SonosResponse sonosResponse = new SonosResponse();
     if (responseCode == 200) {
       sonosResponse.setSuccess(true);
-      sonosResponse.setMessage("And all is quite");
+      sonosResponse.setMessage("And all is quiet");
 
     } else {
       sonosResponse.setSuccess(false);
