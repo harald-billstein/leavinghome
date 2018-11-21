@@ -21,14 +21,16 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
+    http.csrf().disable();
+
     http.authorizeRequests()
-        .antMatchers("/").permitAll().anyRequest().authenticated()
-        .and()
-        .antMatcher("/v1/**").httpBasic();
+        .anyRequest().authenticated()
+        .and().httpBasic();
   }
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    System.out.println("user: " + user + " password: " + password);
     String encodedPassword = new BCryptPasswordEncoder().encode(password);
     auth.inMemoryAuthentication().passwordEncoder(passwordEncoder())
         .withUser(user).password(encodedPassword).roles("role");
@@ -39,3 +41,4 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
 }
+

@@ -1,6 +1,6 @@
 package billstein.harald.leavinghome.services;
 
-public class SonosRequest {
+public class SonosRequestBody {
 
   private boolean resourcesOff;
 
