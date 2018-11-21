@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LeavinghomeApplication {
+public class LeavingHomeApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(LeavinghomeApplication.class, args);
+    SpringApplication.run(LeavingHomeApplication.class, args);
   }
 }
