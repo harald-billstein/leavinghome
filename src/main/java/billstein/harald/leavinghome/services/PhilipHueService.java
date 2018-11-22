@@ -24,8 +24,6 @@ public class PhilipHueService implements PHSDKListener {
   private PHHueSDK phHueSDK;
   private AccessPoint accessPoint;
   private PHBridge phBridge;
-  private boolean toggle = false;
-
 
   public PhilipHueService(PHAccessPointRepository phAccessPointRepository) {
     this.phAccessPointRepository = phAccessPointRepository;
@@ -76,10 +74,11 @@ public class PhilipHueService implements PHSDKListener {
   }
 
   public void toggleAllLights(boolean toggle) {
+    LOGGER.info("toggleAllLights - accessed");
 
     // TODO fix toggle and then connect and test
     PHLightState lightState = new PHLightState();
-    lightState.setOn(toggle);
+    lightState.setOn(!toggle);
 
     if (phBridge != null) {
       List<PHLight> lights = phBridge.getResourceCache().getAllLights();
@@ -95,9 +94,8 @@ public class PhilipHueService implements PHSDKListener {
   public void onCacheUpdated(List<Integer> list, PHBridge phBridge) {
     // Here you receive notifications that the BridgeResource Cache was updated. Use the
     // PHMessageType to check which cache was updated, e.g.
-    LOGGER.info("onCacheUpdated");
+    LOGGER.debug("onCacheUpdated");
     if (list.contains(PHMessageType.LIGHTS_CACHE_UPDATED)) {
-      System.out.println("Lights Cache Updated ");
       this.phBridge = phBridge;
     }
 
@@ -114,6 +112,7 @@ public class PhilipHueService implements PHSDKListener {
 
     accessPoint.setUsername(s);
     phAccessPointRepository.save(accessPoint);
+    this.phBridge = phBridge;
 
     phHueSDK.setSelectedBridge(phBridge);
     phHueSDK.enableHeartbeat(phBridge, PHHueSDK.HB_INTERVAL);
@@ -163,7 +162,7 @@ public class PhilipHueService implements PHSDKListener {
 
   @Override
   public void onConnectionResumed(PHBridge phBridge) {
-    LOGGER.info("onConnectionResumed");
+    LOGGER.debug("onConnectionResumed");
   }
 
   @Override

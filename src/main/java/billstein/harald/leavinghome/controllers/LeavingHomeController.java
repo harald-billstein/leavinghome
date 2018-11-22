@@ -20,6 +20,7 @@ public class LeavingHomeController {
 
   private SonosService sonosService;
   private PhilipHueService philipHueService;
+  private boolean toggle;
 
   public LeavingHomeController(SonosService sonosService, PhilipHueService philipHueService) {
     this.sonosService = sonosService;
@@ -30,11 +31,11 @@ public class LeavingHomeController {
   public ResponseEntity<SonosResponse> toggleOnOff(@RequestBody SonosRequestBody request) {
     LOGGER.info("LeavingHomeController/toggleOnOff - accessed");
 
+    philipHueService.toggleAllLights(toggle);
+    sonosService.playPauseToggle(toggle);
+
+    toggle = !toggle;
     // TODO MAKE BETTER RESPONSE
-    philipHueService.toggleAllLights(request.isResourcesOff());
-    sonosService.playPauseToggle(request.isResourcesOff());
-
-
-    return null;
+    return ResponseEntity.ok(new SonosResponse());
   }
 }
