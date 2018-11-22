@@ -8,7 +8,6 @@
   <artifactId>leavinghome</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
-
   <name>leavinghome</name>
   <description>turns off sonos etc when leaving home</description>
 
@@ -52,6 +51,22 @@
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
     </dependency>
+
+    <!-- install instructions below, to local repository!  -->
+    <!-- mvn install:install-file -Dfile=huelocalsdk.jar -DgroupId=philipshue -DartifactId=local -Dversion=1.0 -Dpackaging=jar -->
+    <dependency>
+      <groupId>philipshue</groupId>
+      <artifactId>local</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <!-- install instructions below, to local repository! -->
+    <!-- mvn install:install-file -Dfile=huesdkresources.jar -DgroupId=philipshue -DartifactId=resources -Dversion=1.0 -Dpackaging=jar -->
+    <dependency>
+      <groupId>philipshue</groupId>
+      <artifactId>resources</artifactId>
+      <version>1.0</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -62,6 +77,5 @@
       </plugin>
     </plugins>
   </build>
-
 
 </project>
