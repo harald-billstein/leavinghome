@@ -14,10 +14,8 @@ public class SonosService {
   private static final Logger LOGGER = LoggerFactory.getLogger(SonosService.class);
   private String pausePath = "http://192.168.0.183:5005/pauseall/";
   private String resumePath = "http://192.168.0.183:5005/resumeall/";
-  private boolean toggle = false;
 
-
-  public ResponseEntity<SonosResponse> playPauseToggle() {
+  public ResponseEntity<SonosResponse> playPauseToggle(boolean toggle) {
     LOGGER.info("SonosService/playPauseToggle - accessed");
 
     Integer responseCode = null;
@@ -27,10 +25,8 @@ public class SonosService {
 
       if (toggle) {
          url = new URL(pausePath);
-        toggle = false;
       } else {
         url = new URL(resumePath);
-        toggle = true;
       }
 
       HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();

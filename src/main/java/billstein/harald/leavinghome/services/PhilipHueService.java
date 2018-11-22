@@ -5,9 +5,12 @@ import billstein.harald.leavinghome.repository.PHAccessPointRepository;
 import com.philips.lighting.hue.sdk.PHAccessPoint;
 import com.philips.lighting.hue.sdk.PHBridgeSearchManager;
 import com.philips.lighting.hue.sdk.PHHueSDK;
+import com.philips.lighting.hue.sdk.PHMessageType;
 import com.philips.lighting.hue.sdk.PHSDKListener;
 import com.philips.lighting.model.PHBridge;
 import com.philips.lighting.model.PHHueParsingError;
+import com.philips.lighting.model.PHLight;
+import com.philips.lighting.model.PHLightState;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +22,9 @@ public class PhilipHueService implements PHSDKListener {
   private static final Logger LOGGER = LoggerFactory.getLogger(PhilipHueService.class);
   private PHAccessPointRepository phAccessPointRepository;
   private PHHueSDK phHueSDK;
+  private AccessPoint accessPoint;
+  private PHBridge phBridge;
+  private boolean toggle = false;
 
 
   public PhilipHueService(PHAccessPointRepository phAccessPointRepository) {
@@ -28,17 +34,11 @@ public class PhilipHueService implements PHSDKListener {
     quickConnect();
   }
 
-  private void quickConnect() {
-    LOGGER.info("quickConnect");
-
-    List<AccessPoint> accessPointList = phAccessPointRepository.findAll();
-    if (accessPointList.size() > 0) {
-      PHAccessPoint phAccessPoint = new PHAccessPoint();
-      phAccessPoint.setIpAddress(accessPointList.get(0).getIpAddress());
-      phHueSDK.connect(phAccessPoint);
-    } else {
-      searchForNewBridge();
-    }
+  private void init() {
+    accessPoint = new AccessPoint();
+    phHueSDK.setAppName("LeavingHome");
+    phHueSDK.setDeviceName("Raspberry Pie");
+    phHueSDK.getNotificationManager().registerSDKListener(this);
   }
 
   private void searchForNewBridge() {
@@ -48,17 +48,59 @@ public class PhilipHueService implements PHSDKListener {
     sm.search(true, true);
   }
 
-  private void init() {
-    phHueSDK.setAppName("LeavingHome");
-    phHueSDK.setDeviceName("Raspberry Pie");
-    phHueSDK.getNotificationManager().registerSDKListener(this);
+  private void quickConnect() {
+    LOGGER.info("quickConnect");
+
+    // 001788FFFE22C41B	192.168.0.6	00:17:88:22:C4:1B	lKApsIAd1KFMSwkrETeBzaThwztOycDOZNeMbKBz
+
+    PHAccessPoint phAccessPoint = new PHAccessPoint();
+    phAccessPoint.setIpAddress("192.168.0.6");
+    phAccessPoint.setUsername("lKApsIAd1KFMSwkrETeBzaThwztOycDOZNeMbKBz");
+    phAccessPoint.setMacAddress("00:17:88:22:C4:1B");
+    phAccessPoint.setBridgeId("001788FFFE22C41B");
+    phHueSDK.connect(phAccessPoint);
+
+
+    /*
+    List<AccessPoint> accessPointList = phAccessPointRepository.findAll();
+
+    if (accessPointList.size() > 0) {
+      PHAccessPoint phAccessPoint = new PHAccessPoint();
+      phAccessPoint.setIpAddress(accessPointList.get(0).getIpAddress());
+      phAccessPoint.setUsername(accessPointList.get(0).getUsername());
+      phHueSDK.connect(phAccessPoint);
+    } else {
+      searchForNewBridge();
+    }
+    */
   }
+
+  public void toggleAllLights(boolean toggle) {
+
+    // TODO fix toggle and then connect and test
+    PHLightState lightState = new PHLightState();
+    lightState.setOn(toggle);
+
+    if (phBridge != null) {
+      List<PHLight> lights = phBridge.getResourceCache().getAllLights();
+
+      for (PHLight phLight : lights) {
+        phBridge.updateLightState(phLight, lightState);
+      }
+    }
+  }
+
 
   @Override
   public void onCacheUpdated(List<Integer> list, PHBridge phBridge) {
     // Here you receive notifications that the BridgeResource Cache was updated. Use the
     // PHMessageType to check which cache was updated, e.g.
     LOGGER.info("onCacheUpdated");
+    if (list.contains(PHMessageType.LIGHTS_CACHE_UPDATED)) {
+      System.out.println("Lights Cache Updated ");
+      this.phBridge = phBridge;
+    }
+
   }
 
   @Override
@@ -69,8 +111,13 @@ public class PhilipHueService implements PHSDKListener {
     // recommended you store the connected IP Address/ Username in your app here.  This will allow
     // easy automatic connection on subsequent use.
     LOGGER.info("onBridgeConnected");
+
+    accessPoint.setUsername(s);
+    phAccessPointRepository.save(accessPoint);
+
     phHueSDK.setSelectedBridge(phBridge);
     phHueSDK.enableHeartbeat(phBridge, PHHueSDK.HB_INTERVAL);
+
   }
 
   @Override
@@ -90,12 +137,10 @@ public class PhilipHueService implements PHSDKListener {
     LOGGER.info("onAccessPointsFound - bridges found: " + list.size());
     PHAccessPoint phAccessPoint = list.get(0);
 
-    AccessPoint accessPoint = new AccessPoint();
     accessPoint.setIpAddress(phAccessPoint.getIpAddress());
-    accessPoint.setUsername(phAccessPoint.getUsername());
     accessPoint.setBridgeID(phAccessPoint.getBridgeId());
     accessPoint.setMacAddress(phAccessPoint.getMacAddress());
-    phAccessPointRepository.save(accessPoint);
+
     phHueSDK.connect(phAccessPoint);
   }
 
