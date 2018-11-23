@@ -2,13 +2,13 @@ package billstein.harald.leavinghome.services;
 
 public class SonosRequestBody {
 
-  private boolean resourcesOff;
+  private boolean resources;
 
-  public boolean isResourcesOff() {
-    return resourcesOff;
+  public boolean isResources() {
+    return resources;
   }
 
-  public void setResourcesOff(boolean resourcesOff) {
-    this.resourcesOff = resourcesOff;
+  public void setResources(boolean resources) {
+    this.resources = resources;
   }
 }

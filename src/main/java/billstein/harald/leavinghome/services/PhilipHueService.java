@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile({"prod","dev"})
+@Profile({"prod", "dev"})
 public class PhilipHueService implements PHSDKListener {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PhilipHueService.class);
@@ -64,22 +64,25 @@ public class PhilipHueService implements PHSDKListener {
 
   }
 
-  public void toggleAllLights(boolean toggle) {
-    LOGGER.info("toggleAllLights - accessed");
+  public String lightsOn(boolean state) {
+    LOGGER.info("lightsOn - accessed");
 
-    // TODO fix toggle and then connect and test
+    String message;
     PHLightState lightState = new PHLightState();
-    lightState.setOn(!toggle);
+    lightState.setOn(state);
 
-    if (phBridge != null) {
-      List<PHLight> lights = phBridge.getResourceCache().getAllLights();
+    List<PHLight> lights = phBridge.getResourceCache().getAllLights();
 
+    if (lights.size() > 0) {
       for (PHLight phLight : lights) {
         phBridge.updateLightState(phLight, lightState);
       }
+      message = "Success";
+    } else {
+      message = "Failed, didn't find any lights";
     }
+    return message;
   }
-
 
   @Override
   public void onCacheUpdated(List<Integer> list, PHBridge phBridge) {
