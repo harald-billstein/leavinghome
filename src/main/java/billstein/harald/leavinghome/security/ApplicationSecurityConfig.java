@@ -14,9 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Value("${password}")
+  @Value("${api.password}")
   private String password;
-  @Value("${username}")
+  @Value("${api.username}")
   private String user;
 
   @Override
@@ -32,7 +32,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    System.out.println("user: " + user + " password: " + password);
     String encodedPassword = new BCryptPasswordEncoder().encode(password);
     auth.inMemoryAuthentication().passwordEncoder(passwordEncoder())
         .withUser(user).password(encodedPassword).roles("role");

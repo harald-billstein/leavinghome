@@ -14,9 +14,11 @@ import com.philips.lighting.model.PHLightState;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile({"prod","dev"})
 public class PhilipHueService implements PHSDKListener {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PhilipHueService.class);
@@ -49,17 +51,6 @@ public class PhilipHueService implements PHSDKListener {
   private void quickConnect() {
     LOGGER.info("quickConnect");
 
-    // 001788FFFE22C41B	192.168.0.6	00:17:88:22:C4:1B	lKApsIAd1KFMSwkrETeBzaThwztOycDOZNeMbKBz
-
-    PHAccessPoint phAccessPoint = new PHAccessPoint();
-    phAccessPoint.setIpAddress("192.168.0.6");
-    phAccessPoint.setUsername("lKApsIAd1KFMSwkrETeBzaThwztOycDOZNeMbKBz");
-    phAccessPoint.setMacAddress("00:17:88:22:C4:1B");
-    phAccessPoint.setBridgeId("001788FFFE22C41B");
-    phHueSDK.connect(phAccessPoint);
-
-
-    /*
     List<AccessPoint> accessPointList = phAccessPointRepository.findAll();
 
     if (accessPointList.size() > 0) {
@@ -70,7 +61,7 @@ public class PhilipHueService implements PHSDKListener {
     } else {
       searchForNewBridge();
     }
-    */
+
   }
 
   public void toggleAllLights(boolean toggle) {
@@ -169,6 +160,7 @@ public class PhilipHueService implements PHSDKListener {
   public void onConnectionLost(PHAccessPoint phAccessPoint) {
     // Here you would handle the loss of connection to your bridge.
     LOGGER.info("onConnectionLost");
+    quickConnect();
   }
 
   @Override

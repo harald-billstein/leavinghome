@@ -6,6 +6,7 @@ import billstein.harald.leavinghome.services.SonosResponse;
 import billstein.harald.leavinghome.services.SonosService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/v1")
+@Profile({"prod","dev"})
 public class LeavingHomeController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LeavingHomeController.class);
@@ -36,6 +38,7 @@ public class LeavingHomeController {
 
     toggle = !toggle;
     // TODO MAKE BETTER RESPONSE
+    // TODO Toggle should first shutoff but if all is off turn on
     return ResponseEntity.ok(new SonosResponse());
   }
 }
