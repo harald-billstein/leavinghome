@@ -55,13 +55,16 @@ public class PhilipHueService implements PHSDKListener {
 
     if (accessPointList.size() > 0) {
       PHAccessPoint phAccessPoint = new PHAccessPoint();
-      phAccessPoint.setIpAddress(accessPointList.get(0).getIpAddress());
-      phAccessPoint.setUsername(accessPointList.get(0).getUsername());
+      phAccessPoint.setIpAddress(accessPointList.get((accessPointList.size() - 1)).getIpAddress());
+      phAccessPoint.setUsername(accessPointList.get((accessPointList.size() - 1)).getUsername());
+      phAccessPoint.setBridgeId(accessPointList.get((accessPointList.size() - 1)).getBridgeID());
+      phAccessPoint.setMacAddress(accessPointList.get((accessPointList.size() - 1)).getMacAddress());
+      this.accessPoint = accessPointList.get(0);
+
       phHueSDK.connect(phAccessPoint);
     } else {
       searchForNewBridge();
     }
-
   }
 
   public String lightsOn(boolean state) {
@@ -104,8 +107,13 @@ public class PhilipHueService implements PHSDKListener {
     // easy automatic connection on subsequent use.
     LOGGER.info("onBridgeConnected");
 
-    accessPoint.setUsername(s);
-    phAccessPointRepository.save(accessPoint);
+    // TODO save just newly created users
+    if (accessPoint.getUsername() == null) {
+      System.out.println("Createing new user!!");
+      accessPoint.setUsername(s);
+      phAccessPointRepository.save(accessPoint);
+    }
+
     this.phBridge = phBridge;
 
     phHueSDK.setSelectedBridge(phBridge);
@@ -130,6 +138,7 @@ public class PhilipHueService implements PHSDKListener {
     LOGGER.info("onAccessPointsFound - bridges found: " + list.size());
     PHAccessPoint phAccessPoint = list.get(0);
 
+    this.accessPoint = new AccessPoint();
     accessPoint.setIpAddress(phAccessPoint.getIpAddress());
     accessPoint.setBridgeID(phAccessPoint.getBridgeId());
     accessPoint.setMacAddress(phAccessPoint.getMacAddress());
