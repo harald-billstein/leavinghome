@@ -14,10 +14,12 @@ public class ServiceHandler {
     this.philipHueService = philipHueService;
   }
 
-  public ResponseEntity<Response> setHomeResourcesState(boolean state) {
-    Response response = new Response();
-    response.setSonosMessage(sonosService.playPauseToggle(state));
-    response.setPhilipsHueMessage(philipHueService.lightsOn(state));
+  public ResponseEntity<ResponseBuilder.Resopnse> setHomeResourcesState(boolean state) {
+    ResponseBuilder.Resopnse response = new ResponseBuilder()
+        .setPhilipsHueMessage(philipHueService.lightsOn(state))
+        .setSonosMessage(sonosService.playPauseToggle(state))
+        .build();
+
     return ResponseEntity.ok(response);
   }
 }
