@@ -26,7 +26,7 @@ public class LeavingHomeController {
   }
 
   @PostMapping(value = "/home/resources/all/")
-  public ResponseEntity<ResponseBuilder.Resopnse> toggleOnOff(
+  public ResponseEntity<ResponseBuilder.Response> toggleOnOff(
       @RequestBody SonosRequestBody request) {
     LOGGER.info("LeavingHomeController/toggleOnOff - accessed");
     return serviceHandler.setHomeResourcesState(request.isResources());

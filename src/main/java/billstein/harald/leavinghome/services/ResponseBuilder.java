@@ -19,7 +19,7 @@ public final class ResponseBuilder {
     return this;
   }
 
-  private class Response {
+  public class Response {
 
     private String sonosMessage;
     private String philipsHueMessage;

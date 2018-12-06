@@ -14,8 +14,8 @@ public class ServiceHandler {
     this.philipHueService = philipHueService;
   }
 
-  public ResponseEntity<ResponseBuilder.Resopnse> setHomeResourcesState(boolean state) {
-    ResponseBuilder.Resopnse response = new ResponseBuilder()
+  public ResponseEntity<ResponseBuilder.Response> setHomeResourcesState(boolean state) {
+    ResponseBuilder.Response response = new ResponseBuilder()
         .setPhilipsHueMessage(philipHueService.lightsOn(state))
         .setSonosMessage(sonosService.playPauseToggle(state))
         .build();
