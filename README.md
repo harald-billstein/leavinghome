@@ -15,7 +15,6 @@ export LEAVINGHOME_EXTERNAL_DB_PASSWORD="dbPassword"
 export LEAVINGHOME_EXTERNAL_DB_URL="dbUrl"
 
 
-
 // Available profiles: dev/prod
 export LEAVINGHOME_PROFILE="profile"
 
