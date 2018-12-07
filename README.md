@@ -1,6 +1,5 @@
 # leavinghome
 
-
 just notes, documentation will come at a later stage
 
 
