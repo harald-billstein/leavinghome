@@ -13,26 +13,16 @@ import org.springframework.stereotype.Service;
 public class SonosService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SonosService.class);
-  private String pausePath = "http://192.168.0.183:5005/pauseall/";
-  private String resumePath = "http://192.168.0.183:5005/resumeall/";
 
-  public String playPauseToggle(boolean state) {
+  public String playPauseToggle(String url) {
     LOGGER.info("SonosService/playPauseToggle - accessed");
 
     Integer responseCode = null;
 
     try {
-      URL url;
+      URL urlToUse = new URL(url);
 
-      if (state) {
-        System.out.println("play");
-        url = new URL(resumePath);
-      } else {
-        System.out.println("stop");
-        url = new URL(pausePath);
-      }
-
-      HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+      HttpURLConnection httpURLConnection = (HttpURLConnection) urlToUse.openConnection();
       httpURLConnection.setRequestMethod("GET");
       responseCode = httpURLConnection.getResponseCode();
     } catch (IOException e) {
